@@ -4,11 +4,11 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
+import CreateIcon from "@mui/icons-material/Create";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store.ts";
-import { open } from "../../features/counter/counterSlice.ts";
+import { open } from "../../features/drawer/drawerSlice.ts";
 
 export default function ButtonAppBar() {
   const [currentDate, setCurrentDate] = useState<string | undefined>(undefined);
@@ -24,7 +24,6 @@ export default function ButtonAppBar() {
 
     getDate();
   }, []);
-  const count = useSelector((state: RootState) => state.counter.value);
   const dispatch = useDispatch();
   const handleMenuDrawer = () => {
     dispatch(open());
@@ -41,10 +40,10 @@ export default function ButtonAppBar() {
             aria-label="menu"
             sx={{ mr: 2 }}
           >
-            <MenuIcon onClick={handleMenuDrawer} />
+            <CreateIcon onClick={handleMenuDrawer} />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            To-do
+          <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+            Home
           </Typography>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {currentDate}

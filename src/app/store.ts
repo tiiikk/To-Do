@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import drawerReducer from "../features/counter/counterSlice.ts";
+import drawerReducer from "../features/drawer/drawerSlice.ts";
 export const store = configureStore({
   reducer: {
     counter: drawerReducer,
