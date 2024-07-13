@@ -1,14 +1,11 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../app/store.ts";
 import { open } from "../../features/drawer/drawerSlice.ts";
 
 const bull = (

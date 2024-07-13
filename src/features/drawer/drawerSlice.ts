@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-export interface drawerState {
+export interface CounterState {
   value: boolean;
 }
 
-const initialState: drawerState = {
+const initialState: CounterState = {
   value: false,
 };
 

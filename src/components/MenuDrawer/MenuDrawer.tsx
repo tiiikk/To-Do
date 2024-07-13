@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../app/store.ts";
 import { close } from "../../features/drawer/drawerSlice.ts";
 import CloseIcon from "@mui/icons-material/Close";
+import { useState } from "react";
+import TaskForm from "../TaskForm/TaskForm.tsx";
 
 export default function TemporaryDrawer() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const isOpen = useSelector((state: RootState) => state.counter.value);
+  const isOpen = useSelector((state: RootState) => state.drawer.value);
 
   const handleClose = () => () => {
     dispatch(close());
@@ -26,6 +28,7 @@ export default function TemporaryDrawer() {
         sx={{ marginLeft: "auto", padding: "1rem", cursor: "pointer" }}
         onClick={handleClose()}
       />
+      <TaskForm />
     </Drawer>
   );
 }
