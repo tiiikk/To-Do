@@ -5,45 +5,57 @@ import CardContent from "@mui/material/CardContent";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Typography from "@mui/material/Typography";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { open } from "../../features/drawer/drawerSlice.ts";
-
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
-  >
-    •
-  </Box>
-);
+import { useEffect, useState } from "react";
 
 export default function OutlinedCard() {
   const dispatch = useDispatch();
+  const [tasks, setTasks] = useState([]);
 
   const handleAddTask = () => {
     dispatch(open());
   };
+
+  const localStorageTasks = JSON.parse(localStorage.getItem("Tasks"));
+  useEffect(() => {
+    setTasks(localStorageTasks);
+  });
   return (
     <Box sx={{ minWidth: 275 }} padding={5}>
-      <Card variant="outlined">
+      {tasks && tasks.length > 0 ? (
         <React.Fragment>
-          <CardContent
-            sx={{ display: "flex", alignItems: "center", gap: "1rem" }}
-          >
-            <Fab
-              onClick={handleAddTask}
-              size="small"
-              color="primary"
-              aria-label="add"
-            >
-              <AddIcon />
-            </Fab>
-            <Typography variant="h5" component="h2">
-              Click to create your first Task!!
-            </Typography>
-          </CardContent>
+          {tasks.map((task, index) => (
+            <Card variant="outlined" key={index} sx={{ marginBottom: 2 }}>
+              <CardContent>
+                <Typography variant="h5" component="h2">
+                  {task}
+                </Typography>
+              </CardContent>
+            </Card>
+          ))}
         </React.Fragment>
-      </Card>
+      ) : (
+        <Card>
+          <React.Fragment>
+            <CardContent
+              sx={{ display: "flex", alignItems: "center", gap: "1rem" }}
+            >
+              <Fab
+                onClick={handleAddTask}
+                size="small"
+                color="primary"
+                aria-label="add"
+              >
+                <AddIcon />
+              </Fab>
+              <Typography variant="h5" component="h2">
+                Click to create your first Task!!
+              </Typography>
+            </CardContent>
+          </React.Fragment>
+        </Card>
+      )}
     </Box>
   );
 }

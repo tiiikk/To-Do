@@ -12,10 +12,17 @@ export default function TaskForm() {
   const [date, setDate] = useState<undefined | string>(undefined);
   const [title, setTitle] = useState<undefined | string>(null);
   const [description, setDescription] = useState<undefined | string>(null);
+
   const handleFormSubmit = () => {
+    const task = [];
     if (!title) {
       alert("Please Fill in a title!");
     } else {
+      task.push(title, description, date);
+      const existingTasks = localStorage.getItem("Tasks");
+      const tasksArray = existingTasks ? JSON.parse(existingTasks) : [];
+      tasksArray.push(task);
+      localStorage.setItem("Tasks", JSON.stringify(tasksArray));
       setTitle("");
       setDate(undefined);
       setDescription("");
