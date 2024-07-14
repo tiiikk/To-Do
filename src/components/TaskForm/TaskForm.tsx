@@ -10,6 +10,11 @@ import { Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { addTask } from "../../features/tasks/tasksSlice";
 
+export interface TASK {
+  title: string;
+  description: string | undefined;
+  date?: string | null;
+}
 export default function TaskForm() {
   const [date, setDate] = useState<undefined | string>(undefined);
   const [title, setTitle] = useState<undefined | string>(null);
@@ -21,14 +26,13 @@ export default function TaskForm() {
       alert("Please fill in a title!");
       return;
     }
-
-    const task = {
+    const task: TASK = {
       title,
       description,
-      date: date ? date : null, // Format date as string
+      date: date ? JSON.stringify(date.$d) : null,
     };
 
-    dispatch(addTask(task)); // Dispatch addTask action
+    dispatch(addTask(task));
 
     // Clear the form
     setTitle("");
@@ -67,7 +71,6 @@ export default function TaskForm() {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DatePicker
           label="Task Deadline"
-          value={date}
           onChange={(newValue) => setDate(newValue)}
         />
       </LocalizationProvider>

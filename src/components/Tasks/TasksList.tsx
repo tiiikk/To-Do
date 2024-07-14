@@ -30,7 +30,6 @@ export default function TasksList({ tasks }) {
     const newDescription = description || tasks[index].description;
     const newDate = date || tasks[index].date;
 
-    // Update the specific task
     const updatedTask = {
       title: newTitle,
       description: newDescription,
@@ -38,9 +37,6 @@ export default function TasksList({ tasks }) {
     };
     dispatch(updateTask({ index, task: updatedTask }));
 
-    setEditIndex(null);
-  };
-  const handleEditClose = () => {
     setEditIndex(null);
   };
   const handleDeleteTask = (index) => {
@@ -92,7 +88,7 @@ export default function TasksList({ tasks }) {
             )}
             {isEditOpen && editIndex !== index ? (
               <Typography fontStyle="italic" variant="h5" component="h2">
-                {task.date}
+                {task.date ? JSON.parse(task.date).split("T")[0] : undefined}
               </Typography>
             ) : (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
