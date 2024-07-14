@@ -7,26 +7,33 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
 import { Button } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { addTask } from "../../features/tasks/tasksSlice";
 
 export default function TaskForm() {
   const [date, setDate] = useState<undefined | string>(undefined);
   const [title, setTitle] = useState<undefined | string>(null);
   const [description, setDescription] = useState<undefined | string>(null);
+  const dispatch = useDispatch();
 
   const handleFormSubmit = () => {
-    const task = [];
     if (!title) {
-      alert("Please Fill in a title!");
-    } else {
-      task.push(title, description, date);
-      const existingTasks = localStorage.getItem("Tasks");
-      const tasksArray = existingTasks ? JSON.parse(existingTasks) : [];
-      tasksArray.push(task);
-      localStorage.setItem("Tasks", JSON.stringify(tasksArray));
-      setTitle("");
-      setDate(undefined);
-      setDescription("");
+      alert("Please fill in a title!");
+      return;
     }
+
+    const task = {
+      title,
+      description,
+      date: date ? date : null, // Format date as string
+    };
+
+    dispatch(addTask(task)); // Dispatch addTask action
+
+    // Clear the form
+    setTitle("");
+    setDescription("");
+    setDate(null);
   };
   return (
     <Box

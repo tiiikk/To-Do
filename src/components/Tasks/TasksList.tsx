@@ -10,6 +10,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
+import { deleteTask, updateTask } from "../../features/tasks/tasksSlice.ts";
+import { useDispatch } from "react-redux";
 
 export default function TasksList({ tasks }) {
   const [isEditOpen, setIsEditOpen] = useState(true);
@@ -17,25 +19,34 @@ export default function TasksList({ tasks }) {
   const [date, setDate] = useState<undefined | string>(undefined);
   const [title, setTitle] = useState<undefined | string>(null);
   const [description, setDescription] = useState<undefined | string>(null);
+  const dispatch = useDispatch();
 
   const handleEditIndex = (index) => {
     setEditIndex(index);
   };
 
   const handleEditSubmit = (index) => {
-    const task = JSON.parse(localStorage.getItem("Tasks"));
-    const newTitle = title || task[index][0];
-    const newDescription = description || task[index][1];
-    const newDate = date || task[index][2];
+    const newTitle = title || tasks[index].title;
+    const newDescription = description || tasks[index].description;
+    const newDate = date || tasks[index].date;
 
-    task[index] = [newTitle, newDescription, newDate];
+    // Update the specific task
+    const updatedTask = {
+      title: newTitle,
+      description: newDescription,
+      newDate: date,
+    };
+    dispatch(updateTask({ index, task: updatedTask }));
 
-    localStorage.setItem("Tasks", JSON.stringify(task));
     setEditIndex(null);
   };
   const handleEditClose = () => {
     setEditIndex(null);
   };
+  const handleDeleteTask = (index) => {
+    dispatch(deleteTask(index));
+  };
+
   return (
     <React.Fragment>
       {tasks.map((task, index) => (
@@ -55,11 +66,11 @@ export default function TasksList({ tasks }) {
           >
             {isEditOpen && editIndex !== index ? (
               <Typography color={"#2c387e"} variant="h4" component="h2">
-                {task[0]}
+                {task.title}
               </Typography>
             ) : (
               <Input
-                defaultValue={task[0]}
+                defaultValue={task.title}
                 onChange={(e) => setTitle(e.target.value)}
                 fullWidth={true}
                 multiline={true}
@@ -68,11 +79,11 @@ export default function TasksList({ tasks }) {
             )}
             {isEditOpen && editIndex !== index ? (
               <Typography variant="p" component="h2">
-                {task[1]}
+                {task.description}
               </Typography>
             ) : (
               <Input
-                defaultValue={task[1]}
+                defaultValue={task.description}
                 onChange={(e) => setDescription(e.target.value)}
                 fullWidth={true}
                 multiline={true}
@@ -81,13 +92,12 @@ export default function TasksList({ tasks }) {
             )}
             {isEditOpen && editIndex !== index ? (
               <Typography fontStyle="italic" variant="h5" component="h2">
-                {task[2].split("T")[0] || null}
+                {task.date}
               </Typography>
             ) : (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Task Deadline"
-                  value={date}
                   onChange={(newValue) => setDate(newValue)}
                 />
               </LocalizationProvider>
@@ -119,7 +129,10 @@ export default function TasksList({ tasks }) {
                 />
               </>
             )}
-            <DeleteIcon sx={{ cursor: "pointer" }} />
+            <DeleteIcon
+              onClick={() => handleDeleteTask(index)}
+              sx={{ cursor: "pointer" }}
+            />
           </CardContent>
         </Card>
       ))}
