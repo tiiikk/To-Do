@@ -10,9 +10,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { deleteTask, updateTask } from "../../features/tasks/tasksSlice.ts";
+import {
+  deleteTask,
+  updateTask,
+  completeTask,
+} from "../../features/tasks/tasksSlice.ts";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
+import Button from "@mui/material/Button";
 
 const TasksList = ({ tasks, editIcons = true }) => {
   const [isEditOpen, setIsEditOpen] = useState(true);
@@ -54,6 +59,10 @@ const TasksList = ({ tasks, editIcons = true }) => {
     dispatch(deleteTask(index));
   };
 
+  const handleCompleteTask = (index) => {
+    dispatch(completeTask(index));
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "";
     const date = dayjs(dateString);
@@ -73,6 +82,24 @@ const TasksList = ({ tasks, editIcons = true }) => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            ...(task.status === "pending" && {
+              "&:hover": {
+                backgroundColor: "#eb6734",
+                cursor: "pointer",
+              },
+            }),
+            ...(task.status === "overdue" && {
+              "&:hover": {
+                backgroundColor: "#b81212",
+                cursor: "pointer",
+              },
+            }),
+            ...(task.status === "completed" && {
+              "&:hover": {
+                backgroundColor: "#81b812",
+                cursor: "pointer",
+              },
+            }),
           }}
         >
           <CardContent
@@ -87,6 +114,30 @@ const TasksList = ({ tasks, editIcons = true }) => {
             <Typography fontStyle="italic" variant="h5" component="h2">
               {formatDate(task.date) || "No date"}
             </Typography>
+            <Typography
+              variant="body2"
+              component="p"
+              color={
+                task.status === "overdue"
+                  ? "error"
+                  : task.status === "pending"
+                    ? "#eb6734"
+                    : task.status === "removed"
+                      ? "textprimary"
+                      : "#81b812"
+              }
+            >
+              Status: {task.status}
+            </Typography>
+            {task.status === "pending" && (
+              <Button
+                color="success"
+                variant="contained"
+                onClick={() => handleCompleteTask(index)}
+              >
+                Complete!
+              </Button>
+            )}
           </CardContent>
           {editIcons && (
             <CardContent
@@ -98,22 +149,27 @@ const TasksList = ({ tasks, editIcons = true }) => {
                 flexWrap: "wrap",
               }}
             >
-              {isEditOpen && editIndex !== index ? (
+              {isEditOpen &&
+              task.status !== "completed" &&
+              editIndex !== index ? (
                 <CreateIcon
                   onClick={() => handleEditIndex(index)}
                   sx={{ cursor: "pointer" }}
                 />
               ) : (
-                <>
-                  <DoneAllIcon
-                    onClick={() => handleEditSubmit(index)}
-                    sx={{ cursor: "pointer" }}
-                  />
-                  <CloseIcon
-                    sx={{ padding: "1rem", cursor: "pointer" }}
-                    onClick={() => handleEditIndex(null)}
-                  />
-                </>
+                isEditOpen &&
+                task.status !== "completed" && (
+                  <>
+                    <DoneAllIcon
+                      onClick={() => handleEditSubmit(index)}
+                      sx={{ cursor: "pointer" }}
+                    />
+                    <CloseIcon
+                      sx={{ padding: "1rem", cursor: "pointer" }}
+                      onClick={() => handleEditIndex(null)}
+                    />
+                  </>
+                )
               )}
               <DeleteIcon
                 onClick={() => handleDeleteTask(index)}

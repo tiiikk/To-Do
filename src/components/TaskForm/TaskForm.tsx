@@ -38,9 +38,9 @@ const TaskForm: React.FC = () => {
         date: values.date ? new Date(values.date).toISOString() : undefined,
       };
 
-      dispatch(addTask(task)); // Dispatch addTask action
+      dispatch(addTask(task));
 
-      resetForm(); // Reset the form after submission
+      resetForm();
     },
   });
 
