@@ -15,12 +15,22 @@ export default function TasksList({ tasks }) {
   const [isEditOpen, setIsEditOpen] = useState(true);
   const [editIndex, setEditIndex] = useState(undefined);
   const [date, setDate] = useState<undefined | string>(undefined);
+  const [title, setTitle] = useState<undefined | string>(null);
+  const [description, setDescription] = useState<undefined | string>(null);
 
   const handleEditIndex = (index) => {
     setEditIndex(index);
   };
 
-  const handleSave = () => {
+  const handleEditSubmit = (index) => {
+    const task = JSON.parse(localStorage.getItem("Tasks"));
+    const newTitle = title || task[index][0];
+    const newDescription = description || task[index][1];
+    const newDate = date || task[index][2];
+
+    task[index] = [newTitle, newDescription, newDate];
+
+    localStorage.setItem("Tasks", JSON.stringify(task));
     setEditIndex(null);
   };
   const handleEditClose = () => {
@@ -50,6 +60,7 @@ export default function TasksList({ tasks }) {
             ) : (
               <Input
                 defaultValue={task[0]}
+                onChange={(e) => setTitle(e.target.value)}
                 fullWidth={true}
                 multiline={true}
                 placeholder={"Task title"}
@@ -62,6 +73,7 @@ export default function TasksList({ tasks }) {
             ) : (
               <Input
                 defaultValue={task[1]}
+                onChange={(e) => setDescription(e.target.value)}
                 fullWidth={true}
                 multiline={true}
                 placeholder={"Task title"}
@@ -69,7 +81,7 @@ export default function TasksList({ tasks }) {
             )}
             {isEditOpen && editIndex !== index ? (
               <Typography fontStyle="italic" variant="h5" component="h2">
-                {task[2].split("T")[0]}
+                {task[2].split("T")[0] || null}
               </Typography>
             ) : (
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -97,7 +109,10 @@ export default function TasksList({ tasks }) {
               />
             ) : (
               <>
-                <DoneAllIcon sx={{ cursor: "pointer" }} />
+                <DoneAllIcon
+                  onClick={() => handleEditSubmit(index)}
+                  sx={{ cursor: "pointer" }}
+                />
                 <CloseIcon
                   sx={{ padding: "1rem", cursor: "pointer" }}
                   onClick={() => handleEditIndex(null)}
