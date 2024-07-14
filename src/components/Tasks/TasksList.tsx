@@ -14,7 +14,7 @@ import { deleteTask, updateTask } from "../../features/tasks/tasksSlice.ts";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 
-export default function TasksList({ tasks }) {
+const TasksList = ({ tasks, editIcons = true }) => {
   const [isEditOpen, setIsEditOpen] = useState(true);
   const [editIndex, setEditIndex] = useState(undefined);
   const [date, setDate] = useState<dayjs.Dayjs | null>(null);
@@ -78,82 +78,53 @@ export default function TasksList({ tasks }) {
           <CardContent
             sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
           >
-            {isEditOpen && editIndex !== index ? (
-              <Typography color={"#2c387e"} variant="h4" component="h2">
-                {task.title}
-              </Typography>
-            ) : (
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                fullWidth={true}
-                multiline={true}
-                placeholder={"Task title"}
-              />
-            )}
-            {isEditOpen && editIndex !== index ? (
-              <Typography variant="p" component="h2">
-                {task.description}
-              </Typography>
-            ) : (
-              <Input
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                fullWidth={true}
-                multiline={true}
-                placeholder={"Task description"}
-              />
-            )}
-            {isEditOpen && editIndex !== index ? (
-              <Typography fontStyle="italic" variant="h5" component="h2">
-                {formatDate(task.date)}
-              </Typography>
-            ) : (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label="Task Deadline"
-                  value={date}
-                  onChange={(newValue) =>
-                    setDate(newValue ? newValue.startOf("day") : null)
-                  }
-                  renderInput={(params) => <Input {...params} />}
-                />
-              </LocalizationProvider>
-            )}
+            <Typography color={"#2c387e"} variant="h4" component="h2">
+              {task.title}
+            </Typography>
+            <Typography variant="body1" component="h2">
+              {task.description || "No description"}
+            </Typography>
+            <Typography fontStyle="italic" variant="h5" component="h2">
+              {formatDate(task.date) || "No date"}
+            </Typography>
           </CardContent>
-          <CardContent
-            sx={{
-              display: "flex",
-              gap: "1.5rem",
-              alignItems: "center",
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            {isEditOpen && editIndex !== index ? (
-              <CreateIcon
-                onClick={() => handleEditIndex(index)}
-                sx={{ cursor: "pointer" }}
-              />
-            ) : (
-              <>
-                <DoneAllIcon
-                  onClick={() => handleEditSubmit(index)}
+          {editIcons && (
+            <CardContent
+              sx={{
+                display: "flex",
+                gap: "1.5rem",
+                alignItems: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              {isEditOpen && editIndex !== index ? (
+                <CreateIcon
+                  onClick={() => handleEditIndex(index)}
                   sx={{ cursor: "pointer" }}
                 />
-                <CloseIcon
-                  sx={{ padding: "1rem", cursor: "pointer" }}
-                  onClick={() => handleEditIndex(null)}
-                />
-              </>
-            )}
-            <DeleteIcon
-              onClick={() => handleDeleteTask(index)}
-              sx={{ cursor: "pointer" }}
-            />
-          </CardContent>
+              ) : (
+                <>
+                  <DoneAllIcon
+                    onClick={() => handleEditSubmit(index)}
+                    sx={{ cursor: "pointer" }}
+                  />
+                  <CloseIcon
+                    sx={{ padding: "1rem", cursor: "pointer" }}
+                    onClick={() => handleEditIndex(null)}
+                  />
+                </>
+              )}
+              <DeleteIcon
+                onClick={() => handleDeleteTask(index)}
+                sx={{ cursor: "pointer" }}
+              />
+            </CardContent>
+          )}
         </Card>
       ))}
     </React.Fragment>
   );
-}
+};
+
+export default TasksList;
